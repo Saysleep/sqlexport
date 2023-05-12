@@ -73,20 +73,29 @@ public class LastApiExport {
     public static void main(String[] args) throws IOException {
         LastApiExport export = new LastApiExport();
         try {
-            //export.getDefendants("完成率明细","order_completion_details_perday.sql");
-            //export.getDefendants("采购完成明细","purchase_details_perday.sql");
-            //export.getDefendants("接单明细","receive_order.sql");
-            //export.getDefendants("销售明细","sale_order.sql");
-            //export.getDefendants("销售明细","sale_order.sql");
-            //export.getDefendants("生产明细","production_order.sql");
+            export.getDefendants("完成率明细","order_completion_details_perday.sql");
+            export.getDefendants("采购完成明细","purchase_details_perday.sql");
+            export.getDefendants("接单明细","receive_order.sql");
+            export.getDefendants("销售明细","sale_order.sql");
+            export.getDefendants("销售明细","sale_order.sql");
+            export.getDefendants("生产明细","production_order.sql");
             //export.getDefendants("销售订单成品库存明细","sale_storage.sql"); --low effect
-            //export.getDefendants("本周生产计划率明细","plan_finish_production.sql");
-            //export.getDefendants("本周采购计划率明细","plan_finish_purchase.sql");
+            export.getDefendants("本周生产计划率明细","plan_finish_production.sql");
+            export.getDefendants("本周采购计划率明细","plan_finish_purchase.sql");
 
-            //export.getDefendants("上周完成率","last_week_finished_rate.sql");
-            //export.getDefendants("上周业绩","last_week_finished_quantities.sql");
-            //export.getDefendants("本周计划单数","this_week_plan_finished_quantities.sql");
-            //export.getDefendants("本周计划台数","this_week_plan_finished_order_quantities.sql");
+            export.getDefendants("上周完成率","last_week_finished_rate.sql");
+            export.getDefendants("上周业绩","last_week_finished_quantities.sql");
+            export.getDefendants("本周计划单数","this_week_plan_finished_quantities.sql");
+            export.getDefendants("本周计划台数","this_week_plan_finished_order_quantities.sql");
+
+            export.getDefendants("完成率明细（箱体部门）","order_completion_details_perday_box.sql");
+            export.getDefendants("完成率明细（整机装配）","order_completion_details_perday_complete_assembly.sql");
+            export.getDefendants("完成率明细（齿轮部门）","order_completion_details_perday_gear.sql");
+            export.getDefendants("完成率明细（精益智造部门采购产线）","order_completion_details_perday_lean_purchase.sql");
+            export.getDefendants("完成率明细（电机定子部门）","order_completion_details_perday_lean_purchase.sql");
+            export.getDefendants("完成率明细（电机装配部门）","order_completion_details_perday_motor_assembly.sql");
+            export.getDefendants("完成率明细（精益智造部门）","order_completion_details_perday_lean_order.sql");
+            export.getDefendants("采购明细（除去精益制造部门）","purchase_details_perday_normal.sql");
         } catch (Exception e) {
             e.printStackTrace();
         }

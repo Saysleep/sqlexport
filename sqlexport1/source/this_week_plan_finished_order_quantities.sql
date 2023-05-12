@@ -117,7 +117,8 @@ from
                       end '隶属部门'
               from dwd_supplychain_plan_manufacture_order dspmo
                        left join ods_sap_supplychain_material_description ossmd on dspmo.material_id=ossmd.material_id
-              where basic_finish_date < curdate() and basic_finish_date >= date_sub(curdate(),interval 1 week)
+              where basic_finish_date < curdate()
+                # and basic_finish_date >= date_sub(curdate(),interval 1 week)
                 and not (order_status REGEXP '^(?!.*部分交货).*交货.*$' or (order_status REGEXP '技术性完成'  and order_quantity != 0))
                 and order_status is not null and actual_due_date is null
           )
