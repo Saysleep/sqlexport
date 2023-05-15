@@ -60,8 +60,9 @@ from
               curdate()
           and basic_finish_date <
               date_add(curdate(), interval 1 week)
-          and (dspmo.order_status not REGEXP '^(?!.*部分交货).*交货.*$' and (order_status not REGEXP '技术性完成') and
-               order_status not regexp '^.*删除.*$')
+          and not ((order_status REGEXP '^(?!.*部分交货).*交货.*$' or order_status LIKE '%部分交货%技术性完成%' or order_status LIKE '%技术性完成%部分交货%') and order_quantity != 0 )
+          and order_status not regexp '^.*删除.*$' and material_detail is not null
+
     ),
           overdue_order as (
               select
@@ -119,25 +120,25 @@ from
                        left join ods_sap_supplychain_material_description ossmd on dspmo.material_id=ossmd.material_id
               where basic_finish_date < curdate()
                 # and basic_finish_date >= date_sub(curdate(),interval 1 week)
-                and not (order_status REGEXP '^(?!.*部分交货).*交货.*$' or (order_status REGEXP '技术性完成'  and order_quantity != 0))
-                and order_status is not null and actual_due_date is null
+                and not ((order_status REGEXP '^(?!.*部分交货).*交货.*$' or order_status LIKE '%部分交货%技术性完成%' or order_status LIKE '%技术性完成%部分交货%') and order_quantity != 0)
+                and order_status is not null and actual_due_date is null and order_status not regexp '^.*删除.*$' and ossmd.material_detail is not null
           )
      select
          '本周计划台数',
-         sum(if(`隶属部门` = '箱体部门',plan_order.生产订单的数量（GAMNG）,0))  '箱体部门本周计划单数',
-         sum(if(`隶属部门` = '精益制造部',plan_order.生产订单的数量（GAMNG）,0)) '精益制造部本周计划单数',
-         sum(if(`隶属部门` = '齿轮制造工厂',plan_order.生产订单的数量（GAMNG）,0)) '齿轮制造工厂本周计划单数',
-         sum(if(`隶属部门` = '电机定子制造工厂',plan_order.生产订单的数量（GAMNG）,0)) '电机定子制造工厂本周计划单数',
-         sum(if(`隶属部门` = '电机装配制造工厂',plan_order.生产订单的数量（GAMNG）,0)) '电机装配制造工厂本周计划单数',
-         sum(if(`隶属部门` = '整机装配制造工厂',plan_order.生产订单的数量（GAMNG）,0)) '整机装配制造工厂本周计划单数'
+         sum(if(`隶属部门` = '箱体部门',plan_order.生产订单的数量（GAMNG）,0))  '箱体部门本周计划台数',
+         sum(if(`隶属部门` = '精益制造部',plan_order.生产订单的数量（GAMNG）,0)) '精益制造部本周计划台数',
+         sum(if(`隶属部门` = '齿轮制造工厂',plan_order.生产订单的数量（GAMNG）,0)) '齿轮制造工厂本周计划台数',
+         sum(if(`隶属部门` = '电机定子制造工厂',plan_order.生产订单的数量（GAMNG）,0)) '电机定子制造工厂本周计划台数',
+         sum(if(`隶属部门` = '电机装配制造工厂',plan_order.生产订单的数量（GAMNG）,0)) '电机装配制造工厂本周计划台数',
+         sum(if(`隶属部门` = '整机装配制造工厂',plan_order.生产订单的数量（GAMNG）,0)) '整机装配制造工厂本周计划台数'
      from plan_order
      union all
      select
-         '逾期计划台数（前一周）',
-         sum(if(`隶属部门` = '箱体部门',overdue_order.生产订单的数量（GAMNG）,0))  '箱体部门本周计划单数',
-         sum(if(`隶属部门` = '精益制造部',overdue_order.生产订单的数量（GAMNG）,0)) '精益制造部本周计划单数',
-         sum(if(`隶属部门` = '齿轮制造工厂',overdue_order.生产订单的数量（GAMNG）,0)) '齿轮制造工厂本周计划单数',
-         sum(if(`隶属部门` = '电机定子制造工厂',overdue_order.生产订单的数量（GAMNG）,0)) '电机定子制造工厂本周计划单数',
-         sum(if(`隶属部门` = '电机装配制造工厂',overdue_order.生产订单的数量（GAMNG）,0)) '电机装配制造工厂本周计划单数',
-         sum(if(`隶属部门` = '整机装配制造工厂',overdue_order.生产订单的数量（GAMNG）,0)) '整机装配制造工厂本周计划单数'
+         '逾期计划台数',
+         sum(if(`隶属部门` = '箱体部门',overdue_order.生产订单的数量（GAMNG）,0))  '箱体部门本周计划台数',
+         sum(if(`隶属部门` = '精益制造部',overdue_order.生产订单的数量（GAMNG）,0)) '精益制造部本周计划台数',
+         sum(if(`隶属部门` = '齿轮制造工厂',overdue_order.生产订单的数量（GAMNG）,0)) '齿轮制造工厂本周计划台数',
+         sum(if(`隶属部门` = '电机定子制造工厂',overdue_order.生产订单的数量（GAMNG）,0)) '电机定子制造工厂本周计划台数',
+         sum(if(`隶属部门` = '电机装配制造工厂',overdue_order.生产订单的数量（GAMNG）,0)) '电机装配制造工厂本周计划台数',
+         sum(if(`隶属部门` = '整机装配制造工厂',overdue_order.生产订单的数量（GAMNG）,0)) '整机装配制造工厂本周计划台数'
      from overdue_order) t

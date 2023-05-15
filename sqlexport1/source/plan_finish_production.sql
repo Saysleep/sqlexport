@@ -56,4 +56,5 @@ where basic_finish_date >=
       curdate()
   and basic_finish_date <
       date_add(curdate() , interval 1 week )
-  and (dspmo.order_status not REGEXP '^(?!.*部分交货).*交货.*$' and (order_status not REGEXP '技术性完成') and order_status not regexp '^.*删除.*$');
+  and ((order_status REGEXP '^(?!.*部分交货).*交货.*$' or order_status LIKE '%部分交货%技术性完成%' or order_status LIKE '%技术性完成%部分交货%') and order_quantity != 0 )
+        and order_status not regexp '^.*删除.*$' and material_detail is not null;

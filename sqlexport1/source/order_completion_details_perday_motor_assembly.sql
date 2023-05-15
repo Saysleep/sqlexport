@@ -50,7 +50,7 @@ from
         left join ods_sap_supplychain_material_description ossmd on dspmo.material_id=ossmd.material_id
         where basic_finish_date < curdate()
           # and basic_finish_date >= date_sub(curdate(),interval 2 week)
-          and not (order_status REGEXP '^(?!.*部分交货).*交货.*$' or (order_status REGEXP '技术性完成'  and order_quantity != 0))
+          and not ((order_status REGEXP '^(?!.*部分交货).*交货.*$' or order_status LIKE '%部分交货%技术性完成%' or order_status LIKE '%技术性完成%部分交货%') and order_quantity != 0 )
           and order_status is not null and actual_due_date is null
           and dspmo.mrp_controller in ('C03', 'C04', 'D05')
         union all
@@ -100,10 +100,7 @@ from
                  left join ods_sap_supplychain_material_description ossmd on dspmo.material_id=ossmd.material_id
         where actual_due_date < curdate() and actual_due_date >= date_sub(curdate(),interval 1 week )
           and actual_due_date > basic_finish_date
-          and
-              (
-            order_status REGEXP '^(?!.*部分交货).*交货.*$' or (order_status REGEXP '技术性完成' and order_quantity != 0)
-              )
+          and ((order_status REGEXP '^(?!.*部分交货).*交货.*$' or order_status LIKE '%部分交货%技术性完成%' or order_status LIKE '%技术性完成%部分交货%') and order_quantity != 0 )
           and order_status is not null and actual_due_date is not null
           and dspmo.mrp_controller in ('C03', 'C04', 'D05')
         union all
@@ -153,9 +150,7 @@ from
         left join ods_sap_supplychain_material_description ossmd on dspmo.material_id=ossmd.material_id
         where basic_finish_date < curdate() and basic_finish_date >= date_sub(curdate(),interval 1 week )
           and actual_due_date <= basic_finish_date
-          and (
-            order_status REGEXP '^(?!.*部分交货).*交货.*$' or (order_status REGEXP '技术性完成'  and order_quantity != 0)
-            )
+          and ((order_status REGEXP '^(?!.*部分交货).*交货.*$' or order_status LIKE '%部分交货%技术性完成%' or order_status LIKE '%技术性完成%部分交货%') and order_quantity != 0 )
           and order_status is not null and actual_due_date is not null
           and dspmo.mrp_controller in ('C03', 'C04', 'D05')
          )t
